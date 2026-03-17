@@ -13,7 +13,7 @@ do
          --query 'Instances[0].InstanceId' \
          --output text)
 
-    if [ "$instance"=="frontend" ]; then
+    if [ "$instance" == "frontend" ]; then
         IP=$(aws ec2 describe-instances \
             --instance-ids $instance_id \
             --query 'Reservations[].Instances[].PublicIpAddress' \
@@ -32,22 +32,22 @@ do
     --hosted-zone-id $HOSTEDZONE_ID \
     --change-batch '
         {
-    "Comment": "Updating Record",
-    "Changes": [
-        {
-        "Action": "UPSERT",
-        "ResourceRecordSet": {
-            "Name": "'$RECORD_NAME'",
-            "Type": "A",
-            "TTL": 1,
-            "ResourceRecords": [
-            {
-                "Value": "'$IP'"
+            "Comment": "Updating Record",
+            "Changes": [
+             {
+                "Action": "UPSERT",
+                "ResourceRecordSet": {
+                    "Name": "'$RECORD_NAME'",
+                    "Type": "A",
+                    "TTL": 1,
+                    "ResourceRecords": [
+                    {
+                        "Value": "'$IP'"
+                    }
+                ]
             }
-            ]
-        }
-        }
-    ]
+            }
+        ]
     }
     '
     echo "record updated for $instance"
