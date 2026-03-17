@@ -8,6 +8,8 @@ G="\e[32m"
 Y="\e[33m"
 B="\e[34m"
 N="\e[0m"
+SCRIPT_DIR=$PWD
+MONGODB_HOST=mongodb.jyothiy.online
 
 if [ $USERID -ne 0 ]; then 
  echo -e "$R please run this script with root user access $N" | tee -a $LOGS_FILE
@@ -48,6 +50,38 @@ VALIDATE $? "Creating App"
 
 curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip  &>>$LOGS_FILE
 VALIDATE $? "Downloading code"
+
+cd /app 
+VALIDATE $? "Moving to app dire4ctory"
+
+rm -rf /app/*
+VALIDATE $? "Removing existing code"
+
+unzip /tmp/catalogue.zip &>>$LOGS_FILE
+VALIDATE $? "Unzipping code"
+
+npm install &>>$LOGS_FILE
+VALIDATE $? "Installing dependencies"
+
+cp $SCRIPT_DIR/catalogue.repo /etc/systemd/system/catalogue.service
+VALIDATE $? "Created systemctl service"
+
+systemctl daemon-reload
+systemctl enable catalogue  &>>$LOGS_FILE
+systemctl start catalogue
+VALIDATE $? "Starting and Enabling Catalogue"
+
+cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
+dnf install mongodb-mongosh -y
+
+
+mongosh --host $MONGODB_HOST </app/db/master-data.js
+
+
+
+
+
+
 
 
 
