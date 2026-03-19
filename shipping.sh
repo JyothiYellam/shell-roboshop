@@ -54,7 +54,7 @@ unzip /tmp/shipping.zip &>>$LOGS_FILE
 VALIDATE $? "Unzipping code"
 
 cd /app 
-mvn clean package  &>>$LOGS_FILE 
+mvn clean package &>>$LOGS_FILE 
 VALIDATE $? "Installing Dependencies"
 
 mv target/shipping-1.0.jar shipping.jar  &>>$LOGS_FILE 
