@@ -53,25 +53,23 @@ VALIDATE $? "Removing existing code"
 unzip /tmp/shipping.zip &>>$LOGS_FILE 
 VALIDATE $? "Unzipping code"
 
-cd /app 
-mvn clean package &>>$LOGS_FILE 
+cd /app
+mvn clean package &>>$LOGS_FILE
 VALIDATE $? "Installing Dependencies"
 
-mv target/shipping-1.0.jar shipping.jar  &>>$LOGS_FILE 
+mv target/shipping-1.0.jar shipping.jar 
 VALIDATE $? "Moving and Renaming Shipping"
 
 cp $SCRIPT_DIR/shipping.service /etc/systemd/system/shipping.service
 VALIDATE $? "Created systemctl service"
 
-dnf install mysql -y &>>$LOGS_FILE 
-VALIDATE $? "Installing mysql"
+dnf install mysql -y &>>$LOGS_FILE
+VALIDATE $? "Installing Mysql"
 
 mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/schema.sql
-mysql -h $MYSQL_HOST  -uroot -pRoboShop@1 < /app/db/app-user.sql 
+mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/app-user.sql 
 mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/master-data.sql
 
 systemctl enable shipping 
 systemctl start shipping
 VALIDATE $? "Enable and Start Shipping"
-
-
