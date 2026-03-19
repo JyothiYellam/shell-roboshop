@@ -41,3 +41,11 @@ VALIDATE $? "Starting RabbitMq"
 rabbitmqctl add_user roboshop roboshop123
 rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*"
 VALIDATE $? "Created user and given permissions"
+
+cp $SCRIPT_DIR/payment.service /etc/systemd/system/payment.service
+VALIDATE $? "Created systemctl service"
+
+systemctl daemon-reload
+systemctl enable payment 
+systemctl start payment
+VALIDATE $? "Starting Payment"
