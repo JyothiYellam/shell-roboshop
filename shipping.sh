@@ -27,7 +27,7 @@ VALIDATE(){
    fi
 
 }
-dnf install maven -y &>>$LOGS_FILE
+dnf install maven    -y &>>$LOGS_FILE
 VALIDATE $? "Installing Maven"
 
 id roboshop &>>$LOGS_FILE
@@ -66,9 +66,14 @@ VALIDATE $? "Created systemctl service"
 dnf install mysql -y &>>$LOGS_FILE
 VALIDATE $? "Installing Mysql"
 
-mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/schema.sql
-mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/app-user.sql 
-mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/master-data.sql
+mysql -h $MYSQL_HOST -uroot -pRoboshop@1 -e 'use cities'
+if [ $? -ne 0 ]; then
+    mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/schema.sql &>>$LOGS_FILE
+    mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/app-user.sql  &>>$LOGS_FILE
+    mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/master-data.sql &>>$LOGS_FILE
+else
+    echo -e "data is already loaded ...$Y SKIPPING $N"
+fi 
 
 systemctl enable shipping 
 systemctl start shipping
