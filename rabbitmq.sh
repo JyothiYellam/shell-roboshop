@@ -34,18 +34,18 @@ VALIDATE $? "Adding Rabbitmq Repo"
 dnf install rabbitmq-server -y &>>$LOGS_FILE
 VALIDATE $? "Installing RabbitMq"
 
-systemctl enable rabbitmq-server
+systemctl enable rabbitmq-server &>>$LOGS_FILE
 systemctl start rabbitmq-server
 VALIDATE $? "Starting RabbitMq"
 
 rabbitmqctl add_user roboshop roboshop123
-rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*"
+rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*" &>>$LOGS_FILE
 VALIDATE $? "Created user and given permissions"
 
-cp $SCRIPT_DIR/payment.service /etc/systemd/system/payment.service
+cp $SCRIPT_DIR/payment.service /etc/systemd/system/payment.service &>>$LOGS_FILE
 VALIDATE $? "Created systemctl service"
 
-systemctl daemon-reload
+systemctl daemon-reload &>>$LOGS_FILE
 systemctl enable payment 
 systemctl start payment
 VALIDATE $? "Starting Payment"
