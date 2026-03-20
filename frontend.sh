@@ -45,7 +45,7 @@ VALIDATE $? "Downloaded and unzipped frontend"
 
 rm -rf /etc/nginx/nginx.conf
 
-cp $SCRIPT_DIR/nginx.conf /etc/nginx/nginx.conf &>>$LOGS_FILE
+cp $SCRIPT_DIR nginx.conf /etc/nginx/nginx.conf &>>$LOGS_FILE
 VALIDATE $? "Copied our nginx conf file"
 
 systemctl restart nginx
